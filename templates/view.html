@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/Action"> Action </a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="/Register"> Add </a>
+        </li>
+
+    <form method="POST" action="/Search" class="form-horizontal">
+      {{ form.csrf_token }}
+    
+        {{ form.key(class="btn btn-outline-dark my-2 my-sm-0") }}
+        {{ form.SubmitField(class="btn btn-outline-success my-2 my-sm-0 ") }}
+      </form>
+    </div>
+  </nav>
+
+{% if var %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID Number</th>
+      <th scope="col">Full Name</th>
+      <th scope="col">Gender</th>
+      <th scope="col">Course</th>
+      <th scope="col">Colleges</th>
+      <th scope="col">Year</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for data in var %}
+
+    <tr>
+      <th scope="row">{{ data[3]}}</th>
+      <td> {{  data[1] }}</td>
+      <td>{{ data[5]}}</td>
+      <td>{{ data[2] }}</td>
+      <td>{{ data[6] }}</td>
+      <td>{{ data[4] }}</td>
+
+    </tr>
+
+{% endfor %}
+
+
+  </tbody>
+</table>
+{% endif %}
+{% endblock content %}
