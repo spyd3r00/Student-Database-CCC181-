@@ -30,25 +30,34 @@ def Search():
 		try:
 			conn = sqlite3.connect('students.db')
 			c = conn.cursor()
-			# var = c.execute("SELECT * FROM students")
-			# holder = []
-			# for data in var:
-			# 	x = c.execute("SELECT colleges FROM colleges WHERE course = '%s' " % data[2]).fetchone()
-			# 	try:
-			# 		holder.append(data + x)
-			# 	except:
-			# 		pass
-			var = c.execute("SELECT * FROM students WHERE idnumber LIKE '%s'" % ('%%'+form.key.data+'%%')).fetchmany() or c.execute("SELECT * FROM students WHERE course LIKE '%s'" % ('%%'+form.key.data+'%%')).fetchall()
-			conn.commit()
-			conn.close()
-			if var:
+			student_data = []
+			var = c.execute("SELECT * FROM students WHERE idnumber LIKE '%s'" % ('%%'+form.key.data+'%%')).fetchmany() or c.execute("SELECT * FROM students WHERE course LIKE '%s'" % ('%%'+form.key.data+'%%')).fetchall()	
+			if not var:				
+				temp = c.execute("SELECT * FROM colleges WHERE colleges LIKE '%s'" % ('%%'+form.key.data+'%%')).fetchall()
+				for data in temp:
+					holder = c.execute("SELECT * FROM students WHERE course LIKE '%s'" % ('%%'+data[0]+'%%')).fetchall()
+					for info in holder:
+						info = list(info)
+						info.append(data[1])
+						info = tuple(info)
+						student_data.append(info)
+			else:
+				print(var)
+				for data in var:
+					x = c.execute("SELECT colleges FROM colleges WHERE course = '%s' " % data[2]).fetchone()
+					try:
+						student_data.append(data + x)
+					except:
+						pass
+			if student_data:
 				flash('Search Successfully!')
-			else:		
+			else:	
 				flash('No Data Existed!')
 
-			return render_template('search.html', title='Search', form= form, var = var)
-		except:
+			return render_template('search.html', title='Search', form= form, var = student_data)
+		except Exception as e:
 			flash('Query Error!')
+			print(e)
 	return render_template('search.html',title='Search', form= form)
 
 
